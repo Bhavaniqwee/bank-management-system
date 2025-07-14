@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banking Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Banking Management System</h1>
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}</p>
+            <a href="{% url 'deposit' %}">Deposit</a>
+            <a href="{% url 'withdraw' %}">Withdraw</a>
+            <a href="{% url 'logout' %}">Logout</a>
+
+            <h3>Your Total Balance: ₹{{ total_balance }}</h3>
+
+            <h3>Filter Transactions:</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Filter</button>
+            </form>
+
+            <h3>Your Transactions:</h3>
+            <table border="1">
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                </tr>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td>{{ transaction.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+</body>
+</html>
